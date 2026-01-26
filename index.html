@@ -1425,23 +1425,45 @@ body.dark-mode .bottom-nav {
     function saveTransactionNote() { const val = document.getElementById('modal-note-input').value; const idx = data.transactions.findIndex(x => x.id === currentEditTransId); if (idx > -1) { data.transactions[idx].note = val; saveData(); renderTransactions(); closeModal('modal-edit'); } }
     function closeModal(id) { document.getElementById(id).style.display = 'none'; currentEditTransId = null; }
     function saveData() { localStorage.setItem('fundTrackerData', JSON.stringify(data)); }
-    function exportData() { 
-        const json = JSON.stringify(data);
+    function exportData() {
+        if (!data) { alert("No data to backup."); return; }
         
-        // 1. Check if running in Android App (The Bridge)
-        if (typeof AndroidInterface !== 'undefined') {
-            AndroidInterface.saveFile(json);
-        } 
-        // 2. Fallback for Web Browser
-        else {
+        // Create a timestamped filename (e.g., Expenser_Backup_2026-01-27.json)
+        const date = new Date().toISOString().split('T')[0];
+        const fileName = `Expenser_Backup_${date}.json`;
+        const json = JSON.stringify(data, null, 2); // Pretty print
+
+        // 1. Try Android APK Bridge First
+        try {
+            if (typeof AndroidInterface !== 'undefined') {
+                AndroidInterface.saveFile(json);
+                return; // Stop here if Android handled it
+            }
+        } catch (e) {
+            console.log("Android Bridge failed, falling back to Web Download");
+        }
+
+        // 2. Fallback: Standard Web/PWA Download
+        try {
             const blob = new Blob([json], {type: "application/json"}); 
             const url = URL.createObjectURL(blob); 
+            
             const a = document.createElement('a'); 
             a.href = url; 
-            a.download = "daycraft_backup_" + formatDateKey(new Date()) + ".json"; 
+            a.download = fileName;
+            
+            // Appending to body is required for some mobile browsers
             document.body.appendChild(a); 
             a.click(); 
-            document.body.removeChild(a); 
+            
+            // Cleanup
+            setTimeout(() => {
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            }, 100);
+            
+        } catch (err) {
+            alert("Backup failed: " + err.message);
         }
     }
     function importData(inp) { const f = inp.files[0]; if(!f) return; const r = new FileReader(); r.onload = e => { 
