@@ -1,12 +1,12 @@
 # Expenser 
 
-**Expenser** is a powerful, offline-capable Progressive Web App (PWA) designed to track expenses, manage funds, monitor investments, and calculate crypto assets in real-time. Built with a "Privacy First" approach, all data remains on your device.
+**Expenser** is a powerful, offline-capable App (Available in both APK and PWA) designed to track expenses, manage funds, monitor investments, and calculate crypto assets in real-time. Built with a "Privacy First" approach, all data remains on your device.
 
 ---
 
 ## 🌟 Key Features
 
-* **⚡ PWA & Offline First:** Installable on Android/iOS and works completely without internet.
+* **⚡ Offline First:** Installable on Android/iOS and works completely without internet.
 * **💸 Smart Transaction Codes:** Quickly add transactions using codes (e.g., `f 200` for Food).
 * **📊 Dynamic Analytics:** Beautiful Pie and Bar charts to visualize spending.
 * **🪙 Crypto Engine:** Live portfolio valuation based on manual coin rates.
